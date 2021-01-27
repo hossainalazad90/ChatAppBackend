@@ -26,7 +26,18 @@ namespace CoreChatApiBack
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();            
+            services.AddControllers();
+
+            #region Session
+            services.AddDistributedMemoryCache();
+            services.AddSession(option =>
+            {
+                option.IdleTimeout = TimeSpan.FromSeconds(20);
+                option.Cookie.HttpOnly = true;
+                option.Cookie.IsEssential = true;
+            });
+            #endregion
+
             services.AddDbContext<AppDBContext>(item => item.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
 
@@ -41,8 +52,11 @@ namespace CoreChatApiBack
             }
 
             app.UseRouting();
-
             app.UseAuthorization();
+
+            #region Session
+            app.UseSession();
+            #endregion
 
             app.UseEndpoints(endpoints =>
             {
