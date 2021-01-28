@@ -38,6 +38,17 @@ namespace CoreChatApiBack
             });
             #endregion
 
+            #region Cors
+            services.AddCors(options =>
+            {
+                options.AddPolicy("AllowOrigin", policy =>
+                {
+                    policy.AllowAnyOrigin();
+                    policy.AllowAnyHeader();
+                });
+            });
+            #endregion
+
             services.AddDbContext<AppDBContext>(item => item.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
 
@@ -58,6 +69,9 @@ namespace CoreChatApiBack
             app.UseSession();
             #endregion
 
+            #region Cors
+            app.UseCors("AllowOrigin");
+            #endregion
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
