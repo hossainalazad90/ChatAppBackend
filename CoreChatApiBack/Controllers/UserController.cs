@@ -24,7 +24,7 @@ namespace CoreChatApiBack.Controllers
         public IActionResult Get()
         {
             var result = _dbContext.Users.ToList();
-            if (result !=null)
+            if (result.Count()>0)
             {
                 return Ok(result);
             }

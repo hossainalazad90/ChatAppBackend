@@ -39,7 +39,7 @@ namespace CoreChatApiBack.Controllers
             }
             if (!ModelState.IsValid)
             {
-                message= "Fail";
+                return BadRequest();
 
             }
 
@@ -58,7 +58,7 @@ namespace CoreChatApiBack.Controllers
             catch (Exception ex)
             {
 
-                message= ex.Message.ToString();
+                return BadRequest(ex.Message);
             }
 
             return Ok(          
@@ -82,7 +82,7 @@ namespace CoreChatApiBack.Controllers
         [HttpPost]
         public ActionResult SignInPost([FromBody] SignInViewModel model)
         {
-            if (! ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 return BadRequest();
             }
@@ -102,7 +102,7 @@ namespace CoreChatApiBack.Controllers
                 return BadRequest();
             }
 
-            return Ok();
+            return Redirect("");
 
         }
 
