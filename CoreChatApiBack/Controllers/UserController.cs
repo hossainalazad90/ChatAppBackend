@@ -21,48 +21,113 @@ namespace CoreChatApiBack.Controllers
         }
         // GET: api/<UserController>
         [HttpGet]
-        public IEnumerable<string> Get()
+        public IActionResult Get()
         {
-            return new string[] { "value1", "value2" };
+            var result = _dbContext.Users.ToList();
+            if (result !=null)
+            {
+                return Ok(result);
+            }
+            return NotFound();
 
         }
 
         // GET api/<UserController>/5
         [HttpGet("{id}")]
-        public string Get(long id)
+        public IActionResult Get(long id)
         {
-            var u = _dbContext.Users.Find(id);
+            var user = _dbContext.Users.Find(id);
 
-            var usr = new User
+            if (user !=null)
             {
-               
-            };
-
-            var chat = new Chat
-            {
-                
-            };
-            return "value";
+                return Ok(user);
+            }
+            return NotFound();
 
 
         }
 
         // POST api/<UserController>
         [HttpPost]
-        public void Post([FromBody] string value)
+        public IActionResult Post([FromBody] User  user)
         {
+            var checkingExistance = _dbContext.Users.FirstOrDefault(f => f.Email == user.Email);
+            if (checkingExistance !=null)
+            {
+                ModelState.AddModelError("Email", "User already registered by this email!!");
+            }
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+
+            try
+            {
+                _dbContext.Users.Add(user);
+                _dbContext.SaveChanges();
+            }
+            catch (Exception)
+            {
+
+                return BadRequest();
+            }
+
+            return Ok();
+
         }
 
         // PUT api/<UserController>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public IActionResult Put(int id, [FromBody] User user)
         {
+            var checkingExistance = _dbContext.Users.FirstOrDefault(f => f.Email == user.Email && f.Id !=id);
+            if (checkingExistance != null)
+            {
+                ModelState.AddModelError("Email", "User already registered by this email!!");
+            }
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+
+            try
+            {
+                _dbContext.Users.Update(user);
+                _dbContext.SaveChanges();
+            }
+            catch (Exception)
+            {
+
+                return BadRequest();
+            }
+
+            return Ok();
+
         }
 
         // DELETE api/<UserController>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public IActionResult Delete(int id)
         {
+            var result = _dbContext.Users.FirstOrDefault(f => f.Id == id);
+            if (result !=null)
+            {
+                try
+                {
+                    _dbContext.Users.Remove(result);
+                    _dbContext.SaveChanges();
+                }
+                catch (Exception)
+                {
+
+                    return BadRequest();
+                }
+
+                return NoContent();
+               
+            }
+
+            return NotFound();
         }
     }
 }

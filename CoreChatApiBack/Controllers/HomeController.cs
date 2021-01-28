@@ -51,7 +51,8 @@ namespace CoreChatApiBack.Controllers
                     LastName = model.LastName,
                     Email=model.Email                
                 };
-             var result = _dBContext.Users.Add(userData);
+                _dBContext.Users.Add(userData);
+                _dBContext.SaveChanges();
 
             }
             catch (Exception ex)
