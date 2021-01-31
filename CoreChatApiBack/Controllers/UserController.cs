@@ -6,6 +6,7 @@ using CoreChatApiBack.Context;
 using CoreChatApiBack.Models;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -23,9 +24,9 @@ namespace CoreChatApiBack.Controllers
         }
         // GET: api/<UserController>
         [HttpGet]
-        public IActionResult Get()
+        public async Task< IActionResult> Get()
         {
-            var result = _dbContext.Users.ToList();
+            var result = await _dbContext.Users.ToListAsync();
             if (result.Count()>0)
             {
                 return Ok(result);
@@ -36,9 +37,9 @@ namespace CoreChatApiBack.Controllers
 
         // GET api/<UserController>/5
         [HttpGet("{id}")]
-        public IActionResult Get(long id)
+        public async Task<IActionResult> Get(long id)
         {
-            var user = _dbContext.Users.Find(id);
+            var user = await _dbContext.Users.FindAsync(id);
 
             if (user !=null)
             {
@@ -51,7 +52,7 @@ namespace CoreChatApiBack.Controllers
 
         // POST api/<UserController>
         [HttpPost]
-        public IActionResult Post([FromBody] User  user)
+        public async Task<IActionResult> Post([FromBody] User  user)
         {
             var checkingExistance = _dbContext.Users.FirstOrDefault(f => f.Email == user.Email);
             if (checkingExistance !=null)
@@ -65,8 +66,8 @@ namespace CoreChatApiBack.Controllers
 
             try
             {
-                _dbContext.Users.Add(user);
-                _dbContext.SaveChanges();
+               await _dbContext.Users.AddAsync(user);
+               await _dbContext.SaveChangesAsync();
             }
             catch (Exception)
             {
@@ -80,9 +81,9 @@ namespace CoreChatApiBack.Controllers
 
         // PUT api/<UserController>/5
         [HttpPut("{id}")]
-        public IActionResult Put(int id, [FromBody] User user)
+        public async Task<IActionResult> Put(int id, [FromBody] User user)
         {
-            var checkingExistance = _dbContext.Users.FirstOrDefault(f => f.Email == user.Email && f.Id !=id);
+            var checkingExistance = await  _dbContext.Users.FirstOrDefaultAsync(f => f.Email == user.Email && f.Id !=id);
             if (checkingExistance != null)
             {
                 ModelState.AddModelError("Email", "User already registered by this email!!");
@@ -95,7 +96,7 @@ namespace CoreChatApiBack.Controllers
             try
             {
                 _dbContext.Users.Update(user);
-                _dbContext.SaveChanges();
+               await _dbContext.SaveChangesAsync();
             }
             catch (Exception)
             {
@@ -109,15 +110,15 @@ namespace CoreChatApiBack.Controllers
 
         // DELETE api/<UserController>/5
         [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            var result = _dbContext.Users.FirstOrDefault(f => f.Id == id);
+            var result = await _dbContext.Users.FirstOrDefaultAsync(f => f.Id == id);
             if (result !=null)
             {
                 try
                 {
                     _dbContext.Users.Remove(result);
-                    _dbContext.SaveChanges();
+                  await  _dbContext.SaveChangesAsync();
                 }
                 catch (Exception)
                 {

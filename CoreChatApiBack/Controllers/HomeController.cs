@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using CoreChatApiBack.Context;
+﻿using CoreChatApiBack.Context;
 using CoreChatApiBack.Models;
 using CoreChatApiBack.ViewModels;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.Threading.Tasks;
 
 namespace CoreChatApiBack.Controllers
 {
@@ -22,16 +20,14 @@ namespace CoreChatApiBack.Controllers
         }
 
         [HttpGet(Name = "Get")]
-        public ActionResult SignUpGet()
-        {
-            var model = new SignUpViewModel();
-            return Ok(model);
-        }
+        public IActionResult SignUpGet() => Ok();
+
+
 
         [HttpPost]
-        public IActionResult SignUpPost([FromBody] SignUpViewModel model)
+        public async  Task<IActionResult> SignUpPost([FromBody] SignUpViewModel model)
         {
-            var isExist = _dBContext.Users.FirstOrDefault(f => f.Email == model.Email) ;
+            var isExist = await _dBContext.Users.FirstOrDefaultAsync(f => f.Email == model.Email) ;
 
             if (isExist !=null)
             {
@@ -52,8 +48,8 @@ namespace CoreChatApiBack.Controllers
                     LastName = model.LastName,
                     Email=model.Email                
                 };
-                _dBContext.Users.Add(userData);
-                _dBContext.SaveChanges();
+              await  _dBContext.Users.AddAsync(userData);
+               await _dBContext.SaveChangesAsync();
 
             }
             catch (Exception ex)
@@ -71,17 +67,13 @@ namespace CoreChatApiBack.Controllers
                        });
         }
 
-        
+
         [HttpGet(Name = "Get")]
-        public ActionResult SignInGet()
-        {
-            var model = new SignInViewModel();
-            return Ok();
-        }
+        public IActionResult SignInGet() => Ok();    
 
         
         [HttpPost]
-        public ActionResult SignInPost([FromBody] SignInViewModel model)
+        public async  Task<ActionResult> SignInPost([FromBody] SignInViewModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -90,7 +82,7 @@ namespace CoreChatApiBack.Controllers
 
             try
             {
-                var existingData = _dBContext.Users.FirstOrDefault(f=>f.Email==model.Email);
+                var existingData = await _dBContext.Users.FirstOrDefaultAsync(f=>f.Email==model.Email);
                 if (existingData !=null)
                 {
                    var result= SignInUser(model);
