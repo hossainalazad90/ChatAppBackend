@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using CoreChatApiBack.Context;
+using CoreChatApiBack.Helpers;
 using CoreChatApiBack.Models;
 using CoreChatApiBack.ViewModels;
 using Microsoft.AspNetCore.Mvc;
@@ -95,9 +96,21 @@ namespace CoreChatApiBack.Controllers
 
         }
 
-        private object SignInUser(SignInViewModel model)
+        private string SignInUser(SignInViewModel model)
         {
-            throw new NotImplementedException();
+            var getUser = _dbContext.Users.FirstOrDefaultAsync(f => f.Email == model.Email);
+            if (getUser !=null )
+            {
+                HttpContext.Session.SetComplexData("SessionUser", getUser);
+                
+            }
+            
+            return "Success";
+        }
+
+        public void SignOut()
+        {
+            HttpContext.Session.Clear();
         }
     }
 }
