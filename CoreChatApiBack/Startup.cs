@@ -2,7 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using CoreChatApiBack.Context;
+using CoreChatApiBack.Utilities.Automapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -49,6 +51,19 @@ namespace CoreChatApiBack
             });
             #endregion
 
+            #region AutoMapper
+
+            //var mappingConfig = new MapperConfiguration(mc =>
+            //{
+            //    mc.AddProfile(new MappingProfile());
+            //});
+            //IMapper mapper = mappingConfig.CreateMapper();
+            //services.AddSingleton(mapper);
+           
+            services.AddAutoMapper(typeof(MappingProfile));
+
+            #endregion
+
             services.AddDbContext<AppDBContext>(item => item.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
 
@@ -72,6 +87,7 @@ namespace CoreChatApiBack
             #region Cors
             app.UseCors("AllowOrigin");
             #endregion
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
