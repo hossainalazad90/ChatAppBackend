@@ -3,4 +3,5 @@ This Project is Combination of  Different Client and Server Project.Develop By A
 # ChatAppBackend Development Utility
 Dot Net Core 3.1
 Signal R
+AutoMapper
 Async functionality
