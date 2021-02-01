@@ -12,8 +12,8 @@ namespace CoreChatApiBack.Utilities.Automapper
     {
         public MappingProfile()
         {
-            CreateMap<User, SignUpViewModel>();
-            CreateMap<SignUpViewModel, User>();
+            CreateMap<User, SignUpViewModel>().ReverseMap();
+            //CreateMap<SignUpViewModel, User>();
         }
     }
 }
