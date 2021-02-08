@@ -75,7 +75,7 @@ namespace CoreChatApiBack.Controllers
                 return BadRequest();
             }
 
-            return Ok();
+            return RedirectToPage("./Index");
 
         }
 
